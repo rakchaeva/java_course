@@ -9,9 +9,9 @@ public class Point {
         this.y = y;
     }
 
-    public static double distance (Point p1, Point p2) {
-        double xDistance = Math.abs(p1.x - p2.x);
-        double yDistance = Math.abs(p1.y - p2.y);
+    public double distanceFromPoint(Point p) {
+        double xDistance = Math.abs(this.x - p.x);
+        double yDistance = Math.abs(this.y - p.y);
 
         return Math.sqrt(xDistance * xDistance + yDistance * yDistance);
     }

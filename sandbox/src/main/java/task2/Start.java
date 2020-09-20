@@ -6,8 +6,8 @@ public class Start {
         Point p2 = new Point(0, 0);
         printDistance(p1, p2);
 
-        Point p3 = new Point(1, 1);
-        Point p4 = new Point(0, 0);
+        Point p3 = new Point(0, 0);
+        Point p4 = new Point(1, 1);
         printDistance(p3, p4);
 
         Point p5 = new Point(2, 1);
@@ -21,6 +21,6 @@ public class Start {
 
     public static void printDistance(Point p1, Point p2) {
         System.out.println("Distance between (" + p1.x + ", " + p1.y +
-                ") and (" + p2.x + ", " + p2.y + ") = " + Point.distance(p1, p2));
+                ") and (" + p2.x + ", " + p2.y + ") = " + p1.distanceFromPoint(p2));
     }
 }
