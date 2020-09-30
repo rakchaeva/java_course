@@ -1,2 +1,2 @@
 # java_course
-Repository for making tasks within JAVA course
+Repository for making tasks within external Java course
