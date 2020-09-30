@@ -22,6 +22,10 @@ public class BaseHelper {
         wd.findElement(locator).sendKeys(text);
     }
 
+    protected void confirmAlert() {
+        wd.switchTo().alert().accept();
+    }
+
     private boolean isElementPresent(By by) {
         try {
             wd.findElement(by);
