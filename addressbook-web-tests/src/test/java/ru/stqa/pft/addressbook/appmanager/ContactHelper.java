@@ -49,4 +49,22 @@ public class ContactHelper extends BaseHelper {
     public void submitContactModification() {
         click(By.xpath("(//input[@name='update'])[2]"));
     }
+
+    public void createContact(ContactData contact) {
+        initContactCreation();
+        fillContactForm(contact, true);
+        submitContactForm();
+    }
+
+    public void initContactCreation() {
+        if (isElementPresent(By.tagName("h1"))
+                && wd.findElement(By.tagName("h1")).getText().equals("Edit / add address book entry")) {
+            return;
+        }
+        click(By.linkText("add new"));
+    }
+
+    public boolean isThereAContact() {
+        return isElementPresent(By.xpath("//tr[2]/td/input"));
+    }
 }
