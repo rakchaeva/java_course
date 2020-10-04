@@ -2,7 +2,6 @@ package testPackage;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import task2.Point;
 
 public class PointTests {
 

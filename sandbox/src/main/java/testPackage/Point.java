@@ -1,4 +1,4 @@
-package task2;
+package testPackage;
 
 public class Point {
     double x;
