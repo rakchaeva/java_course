@@ -17,18 +17,23 @@ public class BaseHelper {
     }
 
     protected void type(By locator, String text) {
-        wd.findElement(locator).click();
-        wd.findElement(locator).clear();
-        wd.findElement(locator).sendKeys(text);
+        click(locator);
+        if (text != null) {
+            String existingText = wd.findElement(locator).getAttribute("value");
+            if (!text.equals(existingText)) {
+                wd.findElement(locator).clear();
+                wd.findElement(locator).sendKeys(text);
+            }
+        }
     }
 
     protected void confirmAlert() {
         wd.switchTo().alert().accept();
     }
 
-    private boolean isElementPresent(By by) {
+    protected boolean isElementPresent(By locator) {
         try {
-            wd.findElement(by);
+            wd.findElement(locator);
             return true;
         } catch (NoSuchElementException e) {
             return false;
