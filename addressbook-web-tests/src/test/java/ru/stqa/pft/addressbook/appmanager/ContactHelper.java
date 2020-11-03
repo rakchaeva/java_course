@@ -24,11 +24,19 @@ public class ContactHelper extends BaseHelper {
         type(By.name("firstname"), contactData.getFirstName());
         type(By.name("lastname"), contactData.getLastName());
         type(By.name("address"), contactData.getAddress());
+        type(By.name("home"), contactData.getHomePhone());
         type(By.name("mobile"), contactData.getMobilePhone());
+        type(By.name("work"), contactData.getWorkPhone());
         type(By.name("email"), contactData.getEmail());
 
         if (creation) {
-            new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactData.getGroup());
+            //select group if there are any
+            List<WebElement> groupOptions =
+                    wd.findElements(By.xpath("//select[@name='new_group']/option[not(@value='[none]')]"));
+            if (groupOptions.size() != 0) {
+                WebElement group = groupOptions.iterator().next();
+                new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(group.getText());
+            }
         } else {
             Assert.assertFalse(isElementPresent(By.name("new_group")));
         }
@@ -92,7 +100,14 @@ public class ContactHelper extends BaseHelper {
             int id = Integer.parseInt(columns.get(0).findElement(By.tagName("input")).getAttribute("id"));
             String lastName = columns.get(1).getText();
             String firstName = columns.get(2).getText();
-            contacts.add(new ContactData().withId(id).withLastName(lastName).withFirstName(firstName));
+            String[] phones = columns.get(5).getText().split("\n");
+            contacts.add(new ContactData()
+                    .withId(id)
+                    .withLastName(lastName)
+                    .withFirstName(firstName)
+                    .withHomePhone(phones[0])
+                    .withMobilePhone(phones[1])
+                    .withWorkPhone(phones[2]));
         }
         return contacts;
     }

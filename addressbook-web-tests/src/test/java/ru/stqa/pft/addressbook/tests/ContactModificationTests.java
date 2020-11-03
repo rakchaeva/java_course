@@ -27,9 +27,10 @@ public class ContactModificationTests extends TestBase {
                     .withFirstName("Ivan")
                     .withLastName("Ivanov")
                     .withAddress("Saint Petersburg")
-                    .withMobilePhone("+79111234567")
-                    .withEmail("ivanov@test.com")
-                    .withGroup("TestGroup1"));
+                    .withHomePhone("111")
+                    .withMobilePhone("222")
+                    .withWorkPhone("333")
+                    .withEmail("ivanov@test.com"));
         }
         app.goTo().homePage();
     }
@@ -43,7 +44,9 @@ public class ContactModificationTests extends TestBase {
                 .withFirstName("Petr")
                 .withLastName("Petrov")
                 .withAddress("Moscow")
-                .withMobilePhone("+79119876543")
+                .withHomePhone("444")
+                .withMobilePhone("555")
+                .withWorkPhone("666")
                 .withEmail("petrov@test.com");
         app.contact().modify(contact);
         app.goTo().homePage();
