@@ -1,7 +1,5 @@
 package ru.stqa.pft.addressbook.model;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
 public class ContactData {
