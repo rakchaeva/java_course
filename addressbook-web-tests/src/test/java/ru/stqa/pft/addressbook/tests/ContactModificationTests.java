@@ -1,5 +1,6 @@
 package ru.stqa.pft.addressbook.tests;
 
+import org.hamcrest.CoreMatchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.pft.addressbook.model.ContactData;
@@ -26,7 +27,7 @@ public class ContactModificationTests extends TestBase {
                     .withFirstName("Ivan")
                     .withLastName("Ivanov")
                     .withAddress("Saint Petersburg")
-                    .withPhone("+79111234567")
+                    .withMobilePhone("+79111234567")
                     .withEmail("ivanov@test.com")
                     .withGroup("TestGroup1"));
         }
@@ -42,13 +43,12 @@ public class ContactModificationTests extends TestBase {
                 .withFirstName("Petr")
                 .withLastName("Petrov")
                 .withAddress("Moscow")
-                .withPhone("+79119876543")
+                .withMobilePhone("+79119876543")
                 .withEmail("petrov@test.com");
         app.contact().modify(contact);
         app.goTo().homePage();
+        assertThat(app.group().count(), CoreMatchers.equalTo(before.size()));
         Contacts after = app.contact().all();
-
-        assertThat(after.size(), equalTo(before.size()));
         assertThat(after, equalTo(before.without(modifiedContact).withAdded(contact)));
     }
 
