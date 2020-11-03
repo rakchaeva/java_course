@@ -6,8 +6,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import ru.stqa.pft.addressbook.model.ContactData;
+import ru.stqa.pft.addressbook.model.Contacts;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ContactHelper extends BaseHelper {
@@ -34,8 +34,8 @@ public class ContactHelper extends BaseHelper {
         }
     }
 
-    public void selectContactCheckbox(int index) {
-        click(By.xpath("//table[@id='maintable']/tbody/tr[" + (index + 2) + "]/td/input"));
+    public void selectContactCheckboxById(int id) {
+        wd.findElement(By.xpath("//table[@id='maintable']/tbody/tr/td/input[@id='" + id + "']")).click();
     }
 
     public void deleteSelectedContacts() {
@@ -46,18 +46,31 @@ public class ContactHelper extends BaseHelper {
         confirmAlert();
     }
 
-    public void selectContactForModification(int index) {
-        click(By.xpath("//table[@id='maintable']/tbody/tr[" + (index + 2) + "]/td[8]/a/img"));
+    public void selectContactToEditById(int id) {
+        WebElement requiredRow = wd.findElement(By.xpath("//table[@id='maintable']/tbody/tr[.//td/input[@id='" + id + "']]"));
+        requiredRow.findElement(By.xpath(".//td[8]/a/img")).click();
     }
 
     public void submitContactModification() {
         click(By.xpath("(//input[@name='update'])[2]"));
     }
 
-    public void createContact(ContactData contact) {
+    public void create(ContactData contact) {
         initContactCreation();
         fillContactForm(contact, true);
         submitContactForm();
+    }
+
+    public void modify(ContactData contact) {
+        selectContactToEditById(contact.getId());
+        fillContactForm(contact, false);
+        submitContactModification();
+    }
+
+    public void delete(ContactData contact) {
+        selectContactCheckboxById(contact.getId());
+        deleteSelectedContacts();
+        confirmContactsDeletion();
     }
 
     public void initContactCreation() {
@@ -72,15 +85,15 @@ public class ContactHelper extends BaseHelper {
         return isElementPresent(By.xpath("//tr[2]/td/input"));
     }
 
-    public List<ContactData> getContactList() {
-        List<ContactData> contacts = new ArrayList<>();
+    public Contacts all() {
+        Contacts contacts = new Contacts();
         List<WebElement> tableRows = wd.findElements(By.xpath("//table[@id='maintable']/tbody/tr[@name='entry']"));
         for (WebElement row : tableRows) {
             List<WebElement> columns = row.findElements(By.tagName("td"));
+            int id = Integer.parseInt(columns.get(0).findElement(By.tagName("input")).getAttribute("id"));
             String lastName = columns.get(1).getText();
             String firstName = columns.get(2).getText();
-            ContactData contact = new ContactData(firstName, lastName, null, null, null, null);
-            contacts.add(contact);
+            contacts.add(new ContactData().withId(id).withLastName(lastName).withFirstName(firstName));
         }
         return contacts;
     }

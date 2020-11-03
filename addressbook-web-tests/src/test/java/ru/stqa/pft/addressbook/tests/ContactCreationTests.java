@@ -1,34 +1,32 @@
 package ru.stqa.pft.addressbook.tests;
 
-import org.testng.Assert;
-import org.testng.annotations.*;
+import org.testng.annotations.Test;
 import ru.stqa.pft.addressbook.model.ContactData;
+import ru.stqa.pft.addressbook.model.Contacts;
 
-import java.util.Comparator;
-import java.util.List;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public class ContactCreationTests extends TestBase {
 
   @Test
   public void testContactCreation() throws Exception {
-    app.goTo().goToHomePage();
-    List<ContactData> before = app.getContactHelper().getContactList();
+    app.goTo().homePage();
+    Contacts before = app.contact().all();
+    ContactData contact = new ContactData()
+            .withFirstName("Ivan")
+            .withLastName("Ivanov")
+            .withAddress("Saint Petersburg")
+            .withPhone("+79111234567")
+            .withEmail("ivanov@test.com")
+            .withGroup("TestGroup1");
+    app.contact().create(contact);
+    app.goTo().homePage();
+    Contacts after = app.contact().all();
 
-    app.goTo().goToContactForm();
-    ContactData contact = new ContactData("Ivan", "Ivanov", "Saint Petersburg", "+79111234567", "ivanov@test.com", "TestGroup1");
-    app.getContactHelper().createContact(contact);
-
-    app.goTo().goToHomePage();
-    List<ContactData> after = app.getContactHelper().getContactList();
-
-    Assert.assertEquals(after.size(), before.size() + 1);
-
-    before.add(contact);
-    Comparator<? super ContactData> byLastAndFirstName =
-            Comparator.comparing(ContactData::getLastName).thenComparing(ContactData::getFirstName);
-    before.sort(byLastAndFirstName);
-    after.sort(byLastAndFirstName);
-    Assert.assertEquals(before, after);
+    assertThat(after.size(), equalTo(before.size() + 1));
+    assertThat(after, equalTo(before.withAdded(contact
+            .withId(after.stream().mapToInt((c) -> c.getId()).max().getAsInt()))));
   }
 
 }
