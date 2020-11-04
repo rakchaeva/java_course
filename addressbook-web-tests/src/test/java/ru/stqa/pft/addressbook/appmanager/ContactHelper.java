@@ -7,10 +7,13 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import ru.stqa.pft.addressbook.model.ContactData;
 import ru.stqa.pft.addressbook.model.Contacts;
+import ru.stqa.pft.addressbook.model.Groups;
 
 import java.util.List;
 
 public class ContactHelper extends BaseHelper {
+
+    private Contacts contactCache = null;
 
     public ContactHelper(WebDriver wd) {
         super(wd);
@@ -66,18 +69,21 @@ public class ContactHelper extends BaseHelper {
         initContactCreation();
         fillContactForm(contact, true);
         submitContactForm();
+        contactCache = null;
     }
 
     public void modify(ContactData contact) {
         selectContactToEditById(contact.getId());
         fillContactForm(contact, false);
         submitContactModification();
+        contactCache = null;
     }
 
     public void delete(ContactData contact) {
         selectContactCheckboxById(contact.getId());
         deleteSelectedContacts();
         confirmContactsDeletion();
+        contactCache = null;
     }
 
     public void initContactCreation() {
@@ -93,7 +99,11 @@ public class ContactHelper extends BaseHelper {
     }
 
     public Contacts all() {
-        Contacts contacts = new Contacts();
+        if (contactCache != null) {
+            return new Contacts(contactCache);
+        }
+
+        contactCache = new Contacts();
         List<WebElement> tableRows = wd.findElements(By.xpath("//table[@id='maintable']/tbody/tr[@name='entry']"));
         for (WebElement row : tableRows) {
             List<WebElement> columns = row.findElements(By.tagName("td"));
@@ -101,13 +111,13 @@ public class ContactHelper extends BaseHelper {
             String lastName = columns.get(1).getText();
             String firstName = columns.get(2).getText();
             String allPhones = columns.get(5).getText();
-            contacts.add(new ContactData()
+            contactCache.add(new ContactData()
                     .withId(id)
                     .withLastName(lastName)
                     .withFirstName(firstName)
                     .withAllPhones(allPhones));
         }
-        return contacts;
+        return contactCache;
     }
 
     public ContactData infoFromEditForm(ContactData contact) {
