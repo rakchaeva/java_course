@@ -100,14 +100,12 @@ public class ContactHelper extends BaseHelper {
             int id = Integer.parseInt(columns.get(0).findElement(By.tagName("input")).getAttribute("id"));
             String lastName = columns.get(1).getText();
             String firstName = columns.get(2).getText();
-            String[] phones = columns.get(5).getText().split("\n");
+            String allPhones = columns.get(5).getText();
             contacts.add(new ContactData()
                     .withId(id)
                     .withLastName(lastName)
                     .withFirstName(firstName)
-                    .withHomePhone(phones[0])
-                    .withMobilePhone(phones[1])
-                    .withWorkPhone(phones[2]));
+                    .withAllPhones(allPhones));
         }
         return contacts;
     }
