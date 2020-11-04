@@ -31,7 +31,7 @@ public class ContactPhoneTests extends TestBase {
                     .withHomePhone("111")
                     .withMobilePhone("222")
                     .withWorkPhone("333")
-                    .withEmail("ivanov@test.com"));
+                    .withEmailOne("ivanov@test.com"));
         }
         app.goTo().homePage();
     }
@@ -47,7 +47,8 @@ public class ContactPhoneTests extends TestBase {
 
     private String mergePhones(ContactData contact) {
         return Arrays.asList(contact.getHomePhone(), contact.getMobilePhone(), contact.getWorkPhone())
-                .stream().filter((s) -> !s.equals(""))
+                .stream()
+                .filter((s) -> !s.equals(""))
                 .map(ContactPhoneTests::cleanedPhone)
                 .collect(Collectors.joining("\n"));
     }

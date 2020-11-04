@@ -7,8 +7,8 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import ru.stqa.pft.addressbook.model.ContactData;
 import ru.stqa.pft.addressbook.model.Contacts;
-import ru.stqa.pft.addressbook.model.Groups;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ContactHelper extends BaseHelper {
@@ -30,7 +30,7 @@ public class ContactHelper extends BaseHelper {
         type(By.name("home"), contactData.getHomePhone());
         type(By.name("mobile"), contactData.getMobilePhone());
         type(By.name("work"), contactData.getWorkPhone());
-        type(By.name("email"), contactData.getEmail());
+        type(By.name("email"), contactData.getEmailOne());
 
         if (creation) {
             //select group if there are any
@@ -110,11 +110,16 @@ public class ContactHelper extends BaseHelper {
             int id = Integer.parseInt(columns.get(0).findElement(By.tagName("input")).getAttribute("id"));
             String lastName = columns.get(1).getText();
             String firstName = columns.get(2).getText();
+            String address = columns.get(3).getText();
+            String allEmails = columns.get(4).getText();
             String allPhones = columns.get(5).getText();
+
             contactCache.add(new ContactData()
                     .withId(id)
                     .withLastName(lastName)
                     .withFirstName(firstName)
+                    .withAddress(address)
+                    .withAllEmails(allEmails)
                     .withAllPhones(allPhones));
         }
         return contactCache;
@@ -123,10 +128,14 @@ public class ContactHelper extends BaseHelper {
     public ContactData infoFromEditForm(ContactData contact) {
         selectContactToEditById(contact.getId());
         String firstName = wd.findElement(By.name("firstname")).getAttribute("value");
-        String lastName = wd.findElement(By.name("lastname")).getAttribute("value");;
-        String homePhone = wd.findElement(By.name("home")).getAttribute("value");;
-        String mobilePhone = wd.findElement(By.name("mobile")).getAttribute("value");;
-        String workPhone = wd.findElement(By.name("work")).getAttribute("value");;
+        String lastName = wd.findElement(By.name("lastname")).getAttribute("value");
+        String homePhone = wd.findElement(By.name("home")).getAttribute("value");
+        String mobilePhone = wd.findElement(By.name("mobile")).getAttribute("value");
+        String workPhone = wd.findElement(By.name("work")).getAttribute("value");
+        String emailOne = wd.findElement(By.name("email")).getAttribute("value");
+        String emailTwo = wd.findElement(By.name("email2")).getAttribute("value");
+        String emailThree = wd.findElement(By.name("email3")).getAttribute("value");
+        String address = wd.findElement(By.name("address")).getAttribute("value");
         wd.navigate().back();
         return new ContactData()
                 .withId(contact.getId())
@@ -134,6 +143,10 @@ public class ContactHelper extends BaseHelper {
                 .withLastName(lastName)
                 .withHomePhone(homePhone)
                 .withMobilePhone(mobilePhone)
-                .withWorkPhone(workPhone);
+                .withWorkPhone(workPhone)
+                .withEmailOne(emailOne)
+                .withEmailTwo(emailTwo)
+                .withEmailThree(emailThree)
+                .withAddress(address);
     }
 }

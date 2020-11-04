@@ -1,16 +1,14 @@
 package ru.stqa.pft.addressbook.tests;
 
-import org.hamcrest.CoreMatchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.pft.addressbook.model.ContactData;
-import ru.stqa.pft.addressbook.model.Contacts;
 import ru.stqa.pft.addressbook.model.GroupData;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
-public class ContactModificationTests extends TestBase {
+public class ContactAddressTests extends TestBase {
 
     @BeforeMethod
     public void ensurePreconditions() {
@@ -36,23 +34,21 @@ public class ContactModificationTests extends TestBase {
     }
 
     @Test
-    public void testContactModification() {
-        Contacts before = app.contact().all();
-        ContactData modifiedContact = before.iterator().next();
-        ContactData contact = new ContactData()
-                .withId(modifiedContact.getId())
-                .withFirstName("Petr")
-                .withLastName("Petrov")
-                .withAddress("Moscow")
-                .withHomePhone("444")
-                .withMobilePhone("555")
-                .withWorkPhone("666")
-                .withEmailOne("petrov@test.com");
-        app.contact().modify(contact);
+    public void testContactAddress() {
         app.goTo().homePage();
-        assertThat(app.group().count(), CoreMatchers.equalTo(before.size()));
-        Contacts after = app.contact().all();
-        assertThat(after, equalTo(before.without(modifiedContact).withAdded(contact)));
+        ContactData contact = app.contact().all().iterator().next();
+        ContactData contactInfoFromEditForm = app.contact().infoFromEditForm(contact);
+
+        assertThat(contact.getAddress(), equalTo(cleanedAddress(contactInfoFromEditForm.getAddress())));
+    }
+
+    private String cleanedAddress(String address) {
+        //firstly, trim spaces before and after;
+        //secondly, remove spaces at the beginning of each line;
+        //thirdly, trim spaces inside the lines
+        return address.trim()
+                .replaceAll("\\n( )+", "\n")
+                .replaceAll(" +", " ");
     }
 
 }

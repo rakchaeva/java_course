@@ -20,7 +20,7 @@ public class ContactCreationTests extends TestBase {
             .withHomePhone("111")
             .withMobilePhone("222")
             .withWorkPhone("333")
-            .withEmail("ivanov@test.com");
+            .withEmailOne("ivanov@test.com");
     app.contact().create(contact);
     app.goTo().homePage();
     Contacts after = app.contact().all();

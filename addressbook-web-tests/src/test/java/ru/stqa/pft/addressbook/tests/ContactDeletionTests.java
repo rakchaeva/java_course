@@ -30,7 +30,7 @@ public class ContactDeletionTests extends TestBase {
                     .withHomePhone("111")
                     .withMobilePhone("222")
                     .withWorkPhone("333")
-                    .withEmail("ivanov@test.com"));
+                    .withEmailOne("ivanov@test.com"));
         }
         app.goTo().homePage();
     }
