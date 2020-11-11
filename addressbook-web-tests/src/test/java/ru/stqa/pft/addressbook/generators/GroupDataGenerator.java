@@ -3,6 +3,8 @@ package ru.stqa.pft.addressbook.generators;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.*;
 import ru.stqa.pft.addressbook.model.GroupData;
 
@@ -39,9 +41,11 @@ public class GroupDataGenerator {
     private void run() throws IOException {
         List<GroupData> groups = generateGroups(count);
         if (dataFormat.equals("csv")) {
-            saveAsCSV(groups, new File(file));
+            saveAsCsv(groups, new File(file));
         } else if (dataFormat.equals("xml")) {
-            saveAsXML(groups, new File(file));
+            saveAsXml(groups, new File(file));
+        } else if (dataFormat.equals("json")) {
+            saveAsJson(groups, new File(file));
         } else {
             System.out.println("Unrecognized format " + dataFormat);
         }
@@ -58,7 +62,7 @@ public class GroupDataGenerator {
         return groups;
     }
 
-    private void saveAsCSV(List<GroupData> groups, File file) throws IOException {
+    private void saveAsCsv(List<GroupData> groups, File file) throws IOException {
         Writer writer = new FileWriter(file);
         for (GroupData group : groups) {
             writer.write(String.format("%s;%s;%s\n", group.getName(), group.getHeader(), group.getFooter()));
@@ -66,7 +70,7 @@ public class GroupDataGenerator {
         writer.close();
     }
 
-    private void saveAsXML(List<GroupData> groups, File file) throws IOException {
+    private void saveAsXml(List<GroupData> groups, File file) throws IOException {
         XStream xstream = new XStream();
         xstream.processAnnotations(GroupData.class);
 /*
@@ -76,6 +80,14 @@ public class GroupDataGenerator {
         String xml = xstream.toXML(groups);
         Writer writer = new FileWriter(file);
         writer.write(xml);
+        writer.close();
+    }
+
+    private void saveAsJson(List<GroupData> groups, File file) throws IOException {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        String json = gson.toJson(groups);
+        Writer writer = new FileWriter(file);
+        writer.write(json);
         writer.close();
     }
 
