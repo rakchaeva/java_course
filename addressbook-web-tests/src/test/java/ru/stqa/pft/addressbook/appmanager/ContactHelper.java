@@ -31,6 +31,7 @@ public class ContactHelper extends BaseHelper {
         type(By.name("mobile"), contactData.getMobilePhone());
         type(By.name("work"), contactData.getWorkPhone());
         type(By.name("email"), contactData.getEmailOne());
+        attach(By.name("photo"), contactData.getPhoto());
 
         if (creation) {
             //select group if there are any
