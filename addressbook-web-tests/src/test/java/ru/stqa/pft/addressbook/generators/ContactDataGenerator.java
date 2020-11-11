@@ -3,8 +3,7 @@ package ru.stqa.pft.addressbook.generators;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.thoughtworks.xstream.XStream;
 import ru.stqa.pft.addressbook.model.ContactData;
 
@@ -12,6 +11,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +57,8 @@ public class ContactDataGenerator {
                     .withLastName(String.format("last name %s", i))
                     .withEmailOne(String.format("email%s@email.com", i))
                     .withMobilePhone(String.format("%s%s%s", i, i + 1, i + 2))
-                    .withAddress(String.format("address %s", i)));
+                    .withAddress(String.format("address %s", i))
+                    .withPhoto(new File("src/test/resources/avatar.png")));
         }
         return contacts;
     }
@@ -72,10 +73,24 @@ public class ContactDataGenerator {
     }
 
     private void saveAsJson(List<ContactData> contacts, File file) throws IOException {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        // inner class for serializing File as its path
+        class FileSerializer implements JsonSerializer<File> {
+            public JsonElement serialize(File src, Type typeOfSrc, JsonSerializationContext context) {
+                return new JsonPrimitive(src.getPath());
+            }
+        }
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(File.class, new FileSerializer())
+                .excludeFieldsWithoutExposeAnnotation()
+                .setPrettyPrinting()
+                .create();
+
         String json = gson.toJson(contacts);
         Writer writer = new FileWriter(file);
         writer.write(json);
         writer.close();
     }
+
+
 }

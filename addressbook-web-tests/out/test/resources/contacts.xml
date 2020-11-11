@@ -5,6 +5,7 @@
     <address>address 0</address>
     <mobilePhone>012</mobilePhone>
     <emailOne>email0@email.com</emailOne>
+    <photo>src\test\resources\avatar.png</photo>
   </contact>
   <contact>
     <lastName>last name 1</lastName>
@@ -12,6 +13,7 @@
     <address>address 1</address>
     <mobilePhone>123</mobilePhone>
     <emailOne>email1@email.com</emailOne>
+    <photo>src\test\resources\avatar.png</photo>
   </contact>
   <contact>
     <lastName>last name 2</lastName>
@@ -19,5 +21,6 @@
     <address>address 2</address>
     <mobilePhone>234</mobilePhone>
     <emailOne>email2@email.com</emailOne>
+    <photo>src\test\resources\avatar.png</photo>
   </contact>
 </list>

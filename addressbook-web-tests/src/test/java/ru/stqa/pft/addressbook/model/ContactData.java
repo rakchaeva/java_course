@@ -35,7 +35,7 @@ public class ContactData {
     private String allEmails;
     @XStreamOmitField
     private String group;
-    @XStreamOmitField
+    @Expose
     private File photo;
 
 
