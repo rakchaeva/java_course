@@ -33,12 +33,10 @@ public class ContactHelper extends BaseHelper {
         attach(By.name("photo"), contactData.getPhoto());
 
         if (creation) {
-            //select group if there are any
-            List<WebElement> groupOptions =
-                    wd.findElements(By.xpath("//select[@name='new_group']/option[not(@value='[none]')]"));
-            if (groupOptions.size() != 0) {
-                WebElement group = groupOptions.iterator().next();
-                new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(group.getText());
+            if (contactData.getGroups().size() > 0) {
+                Assert.assertTrue(contactData.getGroups().size() == 1);
+                new Select(wd.findElement(By.name("new_group"))).selectByVisibleText
+                        (contactData.getGroups().iterator().next().getName());
             }
         } else {
             Assert.assertFalse(isElementPresent(By.name("new_group")));

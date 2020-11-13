@@ -3,10 +3,13 @@ package ru.stqa.pft.addressbook.tests;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.thoughtworks.xstream.XStream;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.stqa.pft.addressbook.model.ContactData;
 import ru.stqa.pft.addressbook.model.Contacts;
+import ru.stqa.pft.addressbook.model.GroupData;
+import ru.stqa.pft.addressbook.model.Groups;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,6 +25,15 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class ContactCreationTests extends TestBase {
 
+  @BeforeMethod
+  public void ensurePreconditions() {
+    // checking presence of groups
+    if (app.db().groups().size() == 0) {
+      app.goTo().groupPage();
+      app.group().create(new GroupData().withName("TestGroup1"));
+    }
+  }
+
   @DataProvider
   public Iterator<Object[]> validContactsFromXml() throws IOException {
     try(BufferedReader reader = new BufferedReader(new FileReader("src/test/resources/contacts.xml"))) {
@@ -33,8 +45,8 @@ public class ContactCreationTests extends TestBase {
       }
       XStream xstream = new XStream();
       xstream.processAnnotations(ContactData.class);
-      List<ContactData> groups = (List<ContactData>) xstream.fromXML(xml);
-      return groups.stream().map((c) -> new Object[]{c}).collect(Collectors.toList()).iterator();
+      List<ContactData> contacts = (List<ContactData>) xstream.fromXML(xml);
+      return contacts.stream().map((c) -> new Object[]{c}).collect(Collectors.toList()).iterator();
     }
   }
 
@@ -66,7 +78,8 @@ public class ContactCreationTests extends TestBase {
   @Test(dataProvider = "validContactsFromXml")
   public void testContactCreation(ContactData contact) {
     Contacts before = app.db().contacts();
-    app.contact().create(contact);
+    Groups groups = app.db().groups();
+    app.contact().create(contact.inGroup(groups.iterator().next()));
     app.goTo().homePage();
 
     assertThat(app.contact().count(), equalTo(before.size() + 1));
