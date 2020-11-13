@@ -8,7 +8,6 @@ import org.testng.Assert;
 import ru.stqa.pft.addressbook.model.ContactData;
 import ru.stqa.pft.addressbook.model.Contacts;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ContactHelper extends BaseHelper {
@@ -97,6 +96,10 @@ public class ContactHelper extends BaseHelper {
 
     public boolean isThereAContact() {
         return isElementPresent(By.xpath("//tr[2]/td/input"));
+    }
+
+    public int count() {
+        return wd.findElements(By.name("entry")).size();
     }
 
     public Contacts all() {

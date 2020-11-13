@@ -202,7 +202,29 @@ public class ContactData {
     }
 
     public File getPhoto() {
-        return new File(photo);
+        return photo == null ? null : new File(photo);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContactData that = (ContactData) o;
+        return id == that.id &&
+                Objects.equals(replacedNullToEmpty(lastName), replacedNullToEmpty(that.lastName)) &&
+                Objects.equals(replacedNullToEmpty(firstName), replacedNullToEmpty(that.firstName)) &&
+                Objects.equals(replacedNullToEmpty(address), replacedNullToEmpty(that.address)) &&
+                Objects.equals(replacedNullToEmpty(mobilePhone), replacedNullToEmpty(that.mobilePhone)) &&
+                Objects.equals(replacedNullToEmpty(homePhone), replacedNullToEmpty(that.homePhone)) &&
+                Objects.equals(replacedNullToEmpty(workPhone), replacedNullToEmpty(that.workPhone)) &&
+                Objects.equals(replacedNullToEmpty(emailOne), replacedNullToEmpty(that.emailOne)) &&
+                Objects.equals(replacedNullToEmpty(emailTwo), replacedNullToEmpty(that.emailTwo)) &&
+                Objects.equals(replacedNullToEmpty(emailThree), replacedNullToEmpty(that.emailThree));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, lastName, firstName, address, mobilePhone, homePhone, workPhone, emailOne, emailTwo, emailThree);
     }
 
     @Override
@@ -213,19 +235,8 @@ public class ContactData {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ContactData that = (ContactData) o;
-        return id == that.id &&
-                Objects.equals(lastName, that.lastName) &&
-                Objects.equals(firstName, that.firstName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, lastName, firstName);
+    private String replacedNullToEmpty(String str) {
+        return str == null ? "" : str;
     }
 
 }

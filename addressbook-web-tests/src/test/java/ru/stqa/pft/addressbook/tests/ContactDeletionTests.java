@@ -1,6 +1,5 @@
 package ru.stqa.pft.addressbook.tests;
 
-import org.hamcrest.CoreMatchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.pft.addressbook.model.ContactData;
@@ -15,14 +14,14 @@ public class ContactDeletionTests extends TestBase {
     @BeforeMethod
     public void ensurePreconditions() {
         // checking presence of groups
-        app.goTo().groupPage();
-        if (app.group().all().size() == 0) {
+        if (app.db().groups().size() == 0) {
+            app.goTo().groupPage();
             app.group().create(new GroupData().withName("TestGroup1"));
         }
 
         //checking presence of contacts
-        app.goTo().homePage();
-        if (app.contact().all().size() == 0) {
+        if (app.db().contacts().size() == 0) {
+            app.goTo().homePage();
             app.contact().create(new ContactData()
                     .withFirstName("Ivan")
                     .withLastName("Ivanov")
@@ -37,13 +36,15 @@ public class ContactDeletionTests extends TestBase {
 
     @Test
     public void testContactDeletion() {
-        Contacts before = app.contact().all();
-        ContactData deletedContact = before.iterator().next();
-        app.contact().delete(deletedContact);
+        Contacts before = app.db().contacts();
+        ContactData contactToBeDeleted = before.iterator().next();
+        app.contact().delete(contactToBeDeleted);
         app.goTo().homePage();
-        assertThat(app.group().count(), CoreMatchers.equalTo(before.size() - 1));
-        Contacts after = app.contact().all();
-        assertThat(after, equalTo(before.without(deletedContact)));
+
+        assertThat(app.contact().count(), equalTo(before.size() - 1));
+
+        Contacts after = app.db().contacts();
+        assertThat(after, equalTo(before.without(contactToBeDeleted)));
     }
 
 }
