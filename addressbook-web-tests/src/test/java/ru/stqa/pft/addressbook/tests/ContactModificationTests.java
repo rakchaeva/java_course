@@ -19,7 +19,7 @@ public class ContactModificationTests extends TestBase {
             app.group().create(new GroupData().withName("TestGroup1"));
         }
 
-        //checking presence of contact not added to any group
+        //checking presence of contacts
         if (app.db().contacts().size() == 0) {
             app.goTo().homePage();
             app.contact().create(new ContactData()
@@ -32,6 +32,7 @@ public class ContactModificationTests extends TestBase {
                     .withEmailOne("ivanov@test.com"));
         }
         app.goTo().homePage();
+        app.contact().selectAllOnHomePage();
     }
 
     @Test

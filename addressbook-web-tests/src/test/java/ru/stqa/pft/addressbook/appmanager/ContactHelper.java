@@ -162,12 +162,16 @@ public class ContactHelper extends BaseHelper {
     }
 
     public void selectGroupOnHomePage(GroupData group) {
-        new Select(wd.findElement(By.name("group"))).selectByVisibleText(group.getName());
+        new Select(wd.findElement(By.name("group"))).selectByValue(String.valueOf(group.getId()));
+    }
+
+    public void selectAllOnHomePage() {
+        new Select(wd.findElement(By.name("group"))).selectByVisibleText("[all]");
     }
 
     public void addContactToGroup(ContactData contact, GroupData group) {
         selectContactCheckboxById(contact.getId());
-        new Select(wd.findElement(By.name("to_group"))).selectByVisibleText(group.getName());
+        new Select(wd.findElement(By.name("to_group"))).selectByValue(String.valueOf(group.getId()));
         click(By.name("add"));
     }
 
@@ -176,4 +180,5 @@ public class ContactHelper extends BaseHelper {
         selectContactCheckboxById(contact.getId());
         click(By.name("remove"));
     }
+
 }

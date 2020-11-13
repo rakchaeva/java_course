@@ -35,6 +35,7 @@ public class ContactDeletionFromGroupTests  extends TestBase {
                     .inGroup(app.db().groups().iterator().next()));
         }
         app.goTo().homePage();
+        app.contact().selectAllOnHomePage();
     }
 
     @Test

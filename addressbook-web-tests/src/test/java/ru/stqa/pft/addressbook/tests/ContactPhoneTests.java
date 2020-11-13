@@ -31,6 +31,7 @@ public class ContactPhoneTests extends TestBase {
                     .withEmailOne("ivanov@test.com"));
         }
         app.goTo().homePage();
+        app.contact().selectAllOnHomePage();
     }
 
     @Test

@@ -33,6 +33,7 @@ public class ContactEmailsTests extends TestBase {
                     .withEmailThree("ivanov@ya.ru"));
         }
         app.goTo().homePage();
+        app.contact().selectAllOnHomePage();
     }
 
     @Test

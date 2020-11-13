@@ -32,6 +32,7 @@ public class ContactDeletionTests extends TestBase {
                     .withEmailOne("ivanov@test.com"));
         }
         app.goTo().homePage();
+        app.contact().selectAllOnHomePage();
     }
 
     @Test

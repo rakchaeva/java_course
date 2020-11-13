@@ -32,6 +32,8 @@ public class ContactCreationTests extends TestBase {
       app.goTo().groupPage();
       app.group().create(new GroupData().withName("TestGroup1"));
     }
+    app.goTo().homePage();
+    app.contact().selectAllOnHomePage();
   }
 
   @DataProvider
