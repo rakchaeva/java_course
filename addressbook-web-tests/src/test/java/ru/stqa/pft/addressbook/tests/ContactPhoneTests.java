@@ -16,14 +16,14 @@ public class ContactPhoneTests extends TestBase {
     @BeforeMethod
     public void ensurePreconditions() {
         // checking presence of groups
-        app.goTo().groupPage();
-        if (app.group().all().size() == 0) {
+        if (app.db().groups().size() == 0) {
+            app.goTo().groupPage();
             app.group().create(new GroupData().withName("TestGroup1"));
         }
 
         //checking presence of contacts
-        app.goTo().homePage();
-        if (app.contact().all().size() == 0) {
+        if (app.db().contacts().size() == 0) {
+            app.goTo().homePage();
             app.contact().create(new ContactData()
                     .withFirstName("Ivan")
                     .withLastName("Ivanov")
