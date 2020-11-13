@@ -6,8 +6,8 @@ import ru.stqa.pft.addressbook.model.ContactData;
 import ru.stqa.pft.addressbook.model.Contacts;
 import ru.stqa.pft.addressbook.model.GroupData;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 public class ContactModificationTests extends TestBase {
 
@@ -19,7 +19,7 @@ public class ContactModificationTests extends TestBase {
             app.group().create(new GroupData().withName("TestGroup1"));
         }
 
-        //checking presence of contacts
+        //checking presence of contact not added to any group
         if (app.db().contacts().size() == 0) {
             app.goTo().homePage();
             app.contact().create(new ContactData()

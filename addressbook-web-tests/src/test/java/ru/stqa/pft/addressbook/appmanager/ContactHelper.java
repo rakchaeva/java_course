@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import ru.stqa.pft.addressbook.model.ContactData;
 import ru.stqa.pft.addressbook.model.Contacts;
+import ru.stqa.pft.addressbook.model.GroupData;
 
 import java.util.List;
 
@@ -100,12 +101,14 @@ public class ContactHelper extends BaseHelper {
         return wd.findElements(By.name("entry")).size();
     }
 
-    public Contacts all() {
-        if (contactCache != null) {
+    public Contacts allOrCurrent(boolean allContacts) {
+        //if getting all contacts, then return cache if it exists
+        if (allContacts && contactCache != null) {
             return new Contacts(contactCache);
         }
 
-        contactCache = new Contacts();
+        //if getting not all contacts or cache doesn't exist, then create new list
+        Contacts currentContacts = new Contacts();
         List<WebElement> tableRows = wd.findElements(By.xpath("//table[@id='maintable']/tbody/tr[@name='entry']"));
         for (WebElement row : tableRows) {
             List<WebElement> columns = row.findElements(By.tagName("td"));
@@ -116,7 +119,7 @@ public class ContactHelper extends BaseHelper {
             String allEmails = columns.get(4).getText();
             String allPhones = columns.get(5).getText();
 
-            contactCache.add(new ContactData()
+            currentContacts.add(new ContactData()
                     .withId(id)
                     .withLastName(lastName)
                     .withFirstName(firstName)
@@ -124,7 +127,13 @@ public class ContactHelper extends BaseHelper {
                     .withAllEmails(allEmails)
                     .withAllPhones(allPhones));
         }
-        return contactCache;
+
+        //cache for all contacts is updated
+        if (allContacts) {
+            contactCache = currentContacts;
+        }
+
+        return currentContacts;
     }
 
     public ContactData infoFromEditForm(ContactData contact) {
@@ -150,5 +159,21 @@ public class ContactHelper extends BaseHelper {
                 .withEmailTwo(emailTwo)
                 .withEmailThree(emailThree)
                 .withAddress(address);
+    }
+
+    public void selectGroupOnHomePage(GroupData group) {
+        new Select(wd.findElement(By.name("group"))).selectByVisibleText(group.getName());
+    }
+
+    public void addContactToGroup(ContactData contact, GroupData group) {
+        selectContactCheckboxById(contact.getId());
+        new Select(wd.findElement(By.name("to_group"))).selectByVisibleText(group.getName());
+        click(By.name("add"));
+    }
+
+    public void deleteContactFromGroup(ContactData contact, GroupData group) {
+        selectGroupOnHomePage(group);
+        selectContactCheckboxById(contact.getId());
+        click(By.name("remove"));
     }
 }

@@ -7,7 +7,6 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.File;
-import java.security.acl.Group;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;

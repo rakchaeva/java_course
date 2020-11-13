@@ -15,7 +15,6 @@ import ru.stqa.pft.addressbook.model.Groups;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -65,7 +64,7 @@ public class TestBase {
         if (Boolean.getBoolean("verifyUI")) {
             logger.info("START inner check: " + new Exception().getStackTrace()[0].getMethodName());
             Contacts dbContacts = app.db().contacts();
-            Contacts uiContacts = app.contact().all();
+            Contacts uiContacts = app.contact().allOrCurrent(true);
 
             assertThat(uiContacts, equalTo(dbContacts
                     .stream()
@@ -79,6 +78,28 @@ public class TestBase {
                     .collect(Collectors.toSet())));
             logger.info("STOP inner check: " + new Exception().getStackTrace()[0].getMethodName());
         }
+    }
+
+    public void verifyContactListInGroupOnUI(GroupData group) {
+        if (Boolean.getBoolean("verifyUI")) {
+            logger.info("START inner check: " + new Exception().getStackTrace()[0].getMethodName());
+            Contacts dbContacts = app.db().getGroup(group).getContacts();
+            app.contact().selectGroupOnHomePage(group);
+            Contacts uiContacts = app.contact().allOrCurrent(false);
+
+            assertThat(uiContacts, equalTo(dbContacts
+                    .stream()
+                    .map((c) -> new ContactData()
+                            .withId(c.getId())
+                            .withLastName(c.getLastName())
+                            .withFirstName(c.getFirstName())
+                            .withAddress(cleanedAddress(c.getAddress()))
+                            .withAllEmails(mergeEmails(c))
+                            .withAllPhones(mergePhones(c)))
+                    .collect(Collectors.toSet())));
+            logger.info("STOP inner check: " + new Exception().getStackTrace()[0].getMethodName());
+        }
+
     }
 
     public String mergeEmails(ContactData contact) {

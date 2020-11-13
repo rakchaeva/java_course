@@ -11,6 +11,7 @@ import ru.stqa.pft.addressbook.model.GroupData;
 import ru.stqa.pft.addressbook.model.Groups;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DbHelper {
     private final SessionFactory sessionFactory;
@@ -40,4 +41,40 @@ public class DbHelper {
         return new Contacts(result);
     }
 
+    public GroupData getGroup(GroupData group) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        GroupData dbGroup = (GroupData) session.createQuery(String.format("from GroupData where id = %s", group.getId())).uniqueResult();
+        session.getTransaction().commit();
+        session.close();
+
+        return dbGroup;
+    }
+    
+    public Contacts contactsNotAddedToAnyGroup() {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        List<ContactData> contacts = session.createQuery( "from ContactData where deprecated = '0000-00-00'" ).list();
+        List<GroupData> groups = session.createQuery( "from GroupData" ).list();
+        session.getTransaction().commit();
+        session.close();
+
+        return new Contacts(contacts
+                .stream()
+                .filter((c) -> c.getGroups().size() < groups.size())
+                .collect(Collectors.toList()));
+    }
+
+    public Contacts contactsAddedToAnyGroup() {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        List<ContactData> contacts = session.createQuery( "from ContactData where deprecated = '0000-00-00'" ).list();
+        session.getTransaction().commit();
+        session.close();
+
+        return new Contacts(contacts
+                .stream()
+                .filter((c) -> c.getGroups().size() != 0)
+                .collect(Collectors.toList()));
+    }
 }
