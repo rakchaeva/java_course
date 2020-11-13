@@ -48,6 +48,7 @@ public class TestBase {
 
     public void verifyGroupListOnUI() {
         if (Boolean.getBoolean("verifyUI")) {
+            logger.info("Start " + new Exception().getStackTrace()[0].getMethodName());
             Groups dbGroups = app.db().groups();
             Groups uiGroups = app.group().all();
 
