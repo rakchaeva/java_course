@@ -226,14 +226,16 @@ public class ContactData {
                 Objects.equals(replacedNullToEmpty(mobilePhone), replacedNullToEmpty(that.mobilePhone)) &&
                 Objects.equals(replacedNullToEmpty(homePhone), replacedNullToEmpty(that.homePhone)) &&
                 Objects.equals(replacedNullToEmpty(workPhone), replacedNullToEmpty(that.workPhone)) &&
+                Objects.equals(replacedNullToEmpty(allPhones), replacedNullToEmpty(that.allPhones)) &&
                 Objects.equals(replacedNullToEmpty(emailOne), replacedNullToEmpty(that.emailOne)) &&
                 Objects.equals(replacedNullToEmpty(emailTwo), replacedNullToEmpty(that.emailTwo)) &&
-                Objects.equals(replacedNullToEmpty(emailThree), replacedNullToEmpty(that.emailThree));
+                Objects.equals(replacedNullToEmpty(emailThree), replacedNullToEmpty(that.emailThree)) &&
+                Objects.equals(replacedNullToEmpty(allEmails), replacedNullToEmpty(that.allEmails));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, lastName, firstName, address, mobilePhone, homePhone, workPhone, emailOne, emailTwo, emailThree);
+        return Objects.hash(id, lastName, firstName, address, mobilePhone, homePhone, workPhone, allPhones, emailOne, emailTwo, emailThree, allEmails);
     }
 
     @Override

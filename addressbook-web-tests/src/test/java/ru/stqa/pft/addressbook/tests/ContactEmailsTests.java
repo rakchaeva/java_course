@@ -47,15 +47,4 @@ public class ContactEmailsTests extends TestBase {
         assertThat(contact.getAllEmails(), equalTo(mergeEmails(contactInfoFromEditForm)));
     }
 
-    private String mergeEmails(ContactData contact) {
-        return Arrays.asList(contact.getEmailOne(), contact.getEmailTwo(), contact.getEmailThree())
-                .stream()
-                .filter((s) -> !s.equals(""))
-                .map(ContactEmailsTests::cleanedEmail)
-                .collect(Collectors.joining("\n"));
-    }
-
-    private static String cleanedEmail(String email) {
-        return email.trim().replaceAll("\\s+", " ");
-    }
 }

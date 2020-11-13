@@ -42,13 +42,4 @@ public class ContactAddressTests extends TestBase {
         assertThat(contact.getAddress(), equalTo(cleanedAddress(contactInfoFromEditForm.getAddress())));
     }
 
-    private String cleanedAddress(String address) {
-        //firstly, trim spaces before and after;
-        //secondly, remove spaces at the beginning of each line;
-        //thirdly, trim spaces inside the lines
-        return address.trim()
-                .replaceAll("\\n( )+", "\n")
-                .replaceAll(" +", " ");
-    }
-
 }
