@@ -19,6 +19,7 @@ public class ApplicationManager {
     private RegistrationHelper registrationHelper;
     private WebDriver wd;
     private String browser;
+    private FtpHelper ftp;
 
     public ApplicationManager(String browser) {
         this.browser = browser;
@@ -48,7 +49,7 @@ public class ApplicationManager {
         if (registrationHelper == null) {
             registrationHelper = new RegistrationHelper(this);
         }
-        return this.registrationHelper;
+        return registrationHelper;
     }
 
     public WebDriver getDriver() {
@@ -63,6 +64,13 @@ public class ApplicationManager {
         }
         wd.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
         wd.get(properties.getProperty("web.baseUrl"));
-        return this.wd;
+        return wd;
+    }
+
+    public FtpHelper ftp() {
+        if (ftp == null) {
+            ftp = new FtpHelper(this);
+        }
+        return ftp;
     }
 }
