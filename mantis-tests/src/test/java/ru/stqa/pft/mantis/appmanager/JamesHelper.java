@@ -2,6 +2,7 @@ package ru.stqa.pft.mantis.appmanager;
 
 import org.apache.commons.net.telnet.TelnetClient;
 import ru.stqa.pft.mantis.model.MailMessage;
+import ru.stqa.pft.mantis.model.UserData;
 
 import javax.mail.*;
 import java.io.IOException;
@@ -27,32 +28,32 @@ public class JamesHelper {
         this.mailSession = Session.getDefaultInstance(System.getProperties());
     }
 
-    public void createUser(String name, String password) {
+    public void createUser(UserData user) {
         initTelnetSession();
-        write("adduser " + name + " " + password);
-        String result = readUntil("User " + name + " added");
+        write("adduser " + user.getUsername() + " " + user.getPassword());
+        String result = readUntil("User " + user.getUsername() + " added");
         closeTelnetSession();
     }
 
-    public void deleteUser(String name) {
+    public void deleteUser(UserData user) {
         initTelnetSession();
-        write("deluser " + name);
-        String result = readUntil("User " + name + " deleted");
+        write("deluser " + user.getUsername());
+        String result = readUntil("User " + user.getUsername() + " deleted");
         closeTelnetSession();
     }
 
-    public boolean doesUserExist(String name) {
+    public boolean doesUserExist(UserData user) {
         initTelnetSession();
-        write("verify " + name);
+        write("verify " + user.getUsername());
         String result = readUntil("exist");
         closeTelnetSession();
-        return result.trim().equals("User " + name + " exists");
+        return result.trim().equals("User " + user.getUsername() + " exists");
     }
 
-    public List<MailMessage> waitForMail(String username, String password, int timeout) throws MessagingException {
+    public List<MailMessage> waitForMail(UserData user, int timeout) throws MessagingException {
         long start = System.currentTimeMillis();
         while(System.currentTimeMillis() < start + timeout) {
-            List<MailMessage> allMail = getAllMail(username, password);
+            List<MailMessage> allMail = getAllMail(user);
             if (allMail.size() > 0) {
                 return allMail;
             }
@@ -125,8 +126,8 @@ public class JamesHelper {
         }
     }
 
-    private List<MailMessage> getAllMail(String username, String password) throws MessagingException {
-        Folder inbox = openInbox(username, password);
+    private List<MailMessage> getAllMail(UserData user) throws MessagingException {
+        Folder inbox = openInbox(user);
         List<MailMessage> messages = Arrays.asList(inbox.getMessages()).stream()
                 .map((m) -> toModelMail(m)).collect(Collectors.toList());
         closeFolder(inbox);
@@ -138,9 +139,9 @@ public class JamesHelper {
         store.close();
     }
 
-    private Folder openInbox(String username, String password) throws MessagingException {
+    private Folder openInbox(UserData user) throws MessagingException {
         store = mailSession.getStore("pop3");
-        store.connect(mailServer, username, password);
+        store.connect(mailServer, user.getUsername(), user.getPassword());
         Folder folder = store.getDefaultFolder().getFolder("INBOX");
         folder.open(Folder.READ_WRITE);
         return folder;
@@ -158,8 +159,8 @@ public class JamesHelper {
         }
     }
 
-    public void drainEmail(String username, String password) throws MessagingException {
-        Folder inbox = openInbox(username, password);
+    public void drainEmail(UserData user) throws MessagingException {
+        Folder inbox = openInbox(user);
         for (Message message : inbox.getMessages()) {
             message.setFlag(Flags.Flag.DELETED, true);
         }
