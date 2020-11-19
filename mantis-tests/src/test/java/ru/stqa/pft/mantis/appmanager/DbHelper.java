@@ -8,7 +8,6 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.stqa.pft.mantis.model.UserData;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DbHelper {
     private final ApplicationManager app;
@@ -23,15 +22,12 @@ public class DbHelper {
     }
 
     public List<UserData> users() {
-/*
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        List<GroupData> result = session.createQuery( "from GroupData" ).list();
+        List<UserData> result = session.createQuery( "from UserData where enabled = '1' and username != 'administrator'" ).list();
         session.getTransaction().commit();
         session.close();
-        return new Groups(result);
- */
-        return null;
+        return result;
     }
 
 }

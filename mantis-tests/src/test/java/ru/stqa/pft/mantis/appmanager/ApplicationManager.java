@@ -15,15 +15,15 @@ import java.util.concurrent.TimeUnit;
 public class ApplicationManager {
 
     private final Properties properties;
-    private RegistrationHelper registrationHelper;
+    private RegistrationAndResetHelper registrationAndResetHelper;
     private WebDriver wd;
     private String browser;
     private FtpHelper ftp;
     private MailHelper mailHelper;
     private JamesHelper jamesHelper;
     private ManageUsersHelper manageUsersHelper;
-    private PasswordResetHelper passwordResetHelper;
     private DbHelper dbHelper;
+    private AdminUISessionHelper adminUISessionHelper;
 
     public ApplicationManager(String browser) {
         this.browser = browser;
@@ -49,11 +49,11 @@ public class ApplicationManager {
         return properties.getProperty(key);
     }
 
-    public RegistrationHelper registration() {
-        if (registrationHelper == null) {
-            registrationHelper = new RegistrationHelper(this);
+    public RegistrationAndResetHelper registrationAndReset() {
+        if (registrationAndResetHelper == null) {
+            registrationAndResetHelper = new RegistrationAndResetHelper(this);
         }
-        return registrationHelper;
+        return registrationAndResetHelper;
     }
 
     public WebDriver getDriver() {
@@ -99,18 +99,18 @@ public class ApplicationManager {
         return manageUsersHelper;
     }
 
-    public PasswordResetHelper passwordReset() {
-        if (passwordResetHelper == null) {
-            passwordResetHelper = new PasswordResetHelper(this);
-        }
-        return passwordResetHelper;
-    }
-
     public DbHelper db() {
         if (dbHelper == null) {
             dbHelper = new DbHelper(this);
         }
         return dbHelper;
+    }
+
+    public AdminUISessionHelper adminUISession() {
+        if (adminUISessionHelper == null) {
+            adminUISessionHelper = new AdminUISessionHelper(this);
+        }
+        return adminUISessionHelper;
     }
 
 }

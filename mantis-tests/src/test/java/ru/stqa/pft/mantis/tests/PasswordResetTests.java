@@ -3,6 +3,7 @@ package ru.stqa.pft.mantis.tests;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import ru.lanwen.verbalregex.VerbalExpression;
 import ru.stqa.pft.mantis.appmanager.HttpSession;
 import ru.stqa.pft.mantis.model.MailMessage;
 import ru.stqa.pft.mantis.model.UserData;
@@ -16,20 +17,17 @@ public class PasswordResetTests extends TestBase {
 
     @BeforeMethod
     public void ensurePreconditions() throws IOException {
-        HttpSession session = app.newSession();
-        UserData adminUser = new UserData()
-                .withUsername(app.getProperty("web.adminLogin"))
-                .withPassword(app.getProperty("web.adminPassword"));
-        session.login(adminUser);
+
+        app.adminUISession().login();
 
         if (app.db().users().size() == 0) {
             long now = System.currentTimeMillis();
             app.manageUsers().openUserList();
             app.manageUsers().create(new UserData()
                     .withUsername(String.format("user%s", now))
-                    .withPassword("password")
                     .withEmail(String.format("user%s@localhost", now)));
         }
+
         app.manageUsers().openUserList();
         app.mail().start();
     }
@@ -44,17 +42,24 @@ public class PasswordResetTests extends TestBase {
                 .withEmail(userToReset.getEmail())
                 .withPassword(userToReset.getPassword() + now);
 
-        app.manageUsers().initPasswordReset(userWithNewPassword); // .selectUser --> click reset
-        List<MailMessage> mailMessages = app.mail().waitForMail(1, 10000); // count ?
+        app.manageUsers().initPasswordReset(userWithNewPassword);
+        List<MailMessage> mailMessages = app.mail().waitForMail(1, 10000);
         String resetLink = findResetLink(mailMessages, userWithNewPassword);
-        app.passwordReset().finish(resetLink, userWithNewPassword);
+        app.registrationAndReset().confirmAction(resetLink, userWithNewPassword);
 
-        assertTrue(app.newSession().login(userWithNewPassword));
+        HttpSession session = app.newSession();
+        assertTrue(session.login(userWithNewPassword));
+        assertTrue(session.isLoggedInAs(userWithNewPassword));
     }
 
     private String findResetLink(List<MailMessage> mailMessages, UserData user) {
-        //TO DO
-        return null;
+        MailMessage mailMessage = mailMessages
+                .stream()
+                .filter((m) -> m.to.equals(user.getEmail()))
+                .findFirst()
+                .get();
+        VerbalExpression regex = VerbalExpression.regex().find("http://").nonSpace().oneOrMore().build();
+        return regex.getText(mailMessage.text);
     }
 
     @AfterMethod(alwaysRun = true)

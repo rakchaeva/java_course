@@ -1,6 +1,5 @@
 package ru.stqa.pft.mantis.tests;
 
-import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -32,7 +31,7 @@ public class RegistrationTests extends TestBase {
                 .withEmail(String.format("user%s@localhost", now));
 
         app.james().createUser(user);
-        app.registration().start(user);
+        app.registrationAndReset().startRegistration(user);
 
         // getting messages from inner Mail Server -->
         // List<MailMessage> mailMessages = app.mail().waitForMail(2, 10000);
@@ -41,7 +40,7 @@ public class RegistrationTests extends TestBase {
         List<MailMessage> mailMessages = app.james().waitForMail(user, 60000);
 
         String confirmationLink = findConfirmationLink(mailMessages, user.getEmail());
-        app.registration().finish(confirmationLink, user);
+        app.registrationAndReset().confirmAction(confirmationLink, user);
         assertTrue(app.newSession().login(user));
     }
 
